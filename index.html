@@ -21,8 +21,8 @@
 
     <div infinite-scroll='loadMore()' infinite-scroll-distance='1'>
 
-        <div class="post" ng-repeat='image in images'>
-            <img ng-src='http://placehold.it/500x350&text={{image}}' />
+        <div class="post" ng-repeat='post in posts'>
+            <img ng-src='http://placehold.it/500x350&text={{post.id}}' />
         </div>
 
 
