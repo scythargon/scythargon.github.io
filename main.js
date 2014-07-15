@@ -3,30 +3,40 @@ var myApp = angular.module('myApp', ['infinite-scroll']);
 myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
     $scope.$rootElement = $rootElement;
     $scope.$timeout= $timeout;
-    $scope.posts = [
-        {id: 1},
-        {id: 2},
-        {id: 3},
-        {id: 4},
-        {id: 5},
-        {id: 6},
-        {id: 7},
-        {id: 8},
-    ];
+
+    $scope.init = function(){
+        $scope.posts = [
+            {id: 1},
+            {id: 2},
+            {id: 3},
+            {id: 4},
+            {id: 5},
+            {id: 6},
+            {id: 7},
+            {id: 8},
+        ];
+
+        window.posts = $scope.posts;
+        _.each($scope.posts, function(post){
+            post.visible = true;
+        });
+        //$scope.posts[1].visible = false;
+    };
+
+    $scope.is_visible = function(item) {
+      return item.visible;
+    };
 
     $scope.hide_topmost_items = function(){
         _.each($scope.posts, function(post){
             var elem = $('#post_' + post.id);
             if (elem.position().top + elem.height() + 500 < window.pageYOffset){
-                elem.hidden = true;
+                post.visible = false;
                 window.scrollTo(0, window.pageYOffset - elem.height());
-                elem.hide();
+                //elem.hide();
                 console.log('#post_' + post.id + ' is hidden now')
             }
         });
-        //window.pageYOffset
-        //('div.post:eq(2)').position()
-        //e.height()
     };
 
     $(window).on('scroll', $scope.hide_topmost_items);
@@ -38,4 +48,6 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
             $scope.posts.push({id: i + length});
         }
     };
+
+    $scope.init();
 });
