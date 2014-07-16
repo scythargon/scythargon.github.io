@@ -28,15 +28,21 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
     };
 
     $scope.hide_topmost_items = function(){
+        var changed = false;
         _.each($scope.posts, function(post){
             var elem = $('#post_' + post.id);
+            if (!post.visible)
+                return;
             if (elem.position().top + elem.height() + 500 < window.pageYOffset){
+                changed = true;
                 post.visible = false;
                 window.scrollTo(0, window.pageYOffset - elem.height());
                 //elem.hide();
                 console.log('#post_' + post.id + ' is hidden now')
             }
         });
+        if (changed)
+            $scope.$apply();
     };
 
     $(window).on('scroll', $scope.hide_topmost_items);
