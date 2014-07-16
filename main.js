@@ -20,7 +20,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
         _.each($scope.posts, function(post){
             post.visible = true;
         });
-        //$scope.posts[1].visible = false;
+        $scope.first_visible_idx = 0;
     };
 
     $scope.is_visible = function(item) {
@@ -28,21 +28,63 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
     };
 
     $scope.hide_topmost_items = function(){
+
+        var TOP_SCROLL_RESERVE = 2000;
+
         var changed = false;
-        _.each($scope.posts, function(post){
-            var elem = $('#post_' + post.id);
-            if (!post.visible)
-                return;
-            if (elem.position().top + elem.height() + 500 < window.pageYOffset){
-                changed = true;
-                post.visible = false;
-                window.scrollTo(0, window.pageYOffset - elem.height());
-                //elem.hide();
-                console.log('#post_' + post.id + ' is hidden now');
+
+        function StopCheckingException() {};
+
+        try {
+            _.each($scope.posts.slice($scope.first_visible_idx), function(post){
+                var elem = $('#post_' + post.id);
+
+                if (elem.position().top + elem.height() + TOP_SCROLL_RESERVE < window.pageYOffset){
+                    changed = true;
+                    $scope.first_visible_idx += 1;
+                    post.visible = false;
+                    window.scrollTo(0, window.pageYOffset - elem.height());
+                    //$(window).height()
+                    console.log(post.id + ' is hidden now');
+                } else {
+                    throw new StopCheckingException();  // need to return from _.each call
+                }
+            });
+        } catch (e) {
+            if (e instanceof StopCheckingException) {
+                // everything is OK
             }
-        });
+            else {
+                throw e;
+            }
+        }
+
+        try {
+            _.each($scope.posts.slice(0, $scope.first_visible_idx).reverse(), function(post){
+                if (window.pageYOffset < TOP_SCROLL_RESERVE){
+                    changed = true;
+                    $scope.first_visible_idx -= 1;
+                    post.visible = true;
+                    $scope.$apply();
+                    var elem = $('#post_' + post.id);
+                    window.scrollTo(0, window.pageYOffset + elem.height());
+                    console.log(post.id + ' is visible now');
+                } else {
+                    throw new StopCheckingException();  // need to return from _.each call
+                }
+            });
+        } catch (e) {
+            if (e instanceof StopCheckingException) {
+                // everything is OK
+            }
+            else {
+                throw e;
+            }
+        }
+
         if (changed)
             $scope.$apply();
+
     };
 
     $(window).on('scroll', $scope.hide_topmost_items);
