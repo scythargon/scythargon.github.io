@@ -38,7 +38,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
                 post.visible = false;
                 window.scrollTo(0, window.pageYOffset - elem.height());
                 //elem.hide();
-                console.log('#post_' + post.id + ' is hidden now')
+                console.log('#post_' + post.id + ' is hidden now');
             }
         });
         if (changed)
@@ -51,7 +51,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
         var length = $scope.posts.length;
         var last = $scope.posts[length - 1];
         for(var i = 1; i <= 8; i++) {
-            $scope.posts.push({id: i + length});
+            $scope.posts.push({id: i + length, visible: true});
         }
     };
 
