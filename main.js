@@ -21,6 +21,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
             post.visible = true;
         });
         $scope.first_visible_idx = 0;
+        $scope.last_visible_idx = $scope.posts.length - 1;
     };
 
     $scope.is_visible = function(item) {
@@ -30,12 +31,13 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
     $scope.hide_topmost_items = function(){
 
         var TOP_SCROLL_RESERVE = 2000;
+        var BOTTOM_SCROLL_RESERVE = 5000;
 
         var changed = false;
 
         function StopCheckingException() {};
 
-        try {
+        try {  // hiding the topmost when scrolling down
             _.each($scope.posts.slice($scope.first_visible_idx), function(post){
                 var elem = $('#post_' + post.id);
 
@@ -59,7 +61,8 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
             }
         }
 
-        try {
+
+        try {  // showing back the topmost when scrolling up
             _.each($scope.posts.slice(0, $scope.first_visible_idx).reverse(), function(post){
                 if (window.pageYOffset < TOP_SCROLL_RESERVE){
                     changed = true;
@@ -82,6 +85,32 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
             }
         }
 
+
+        try {  // hiding the lowest when scrolling up
+            _.each($scope.posts.slice(0, $scope.last_visible_idx + 1).reverse(), function(post){
+                var elem = $('#post_' + post.id);
+
+                if (elem.position().top > window.pageYOffset + BOTTOM_SCROLL_RESERVE){
+                    changed = true;
+                    $scope.last_visible_idx -= 1;
+                    post.visible = false;
+                    //window.scrollTo(0, window.pageYOffset - elem.height());
+                    //$(window).height()
+                    console.log(post.id + ' is hidden now');
+                } else {
+                    throw new StopCheckingException();  // need to return from _.each call
+                }
+            });
+        } catch (e) {
+            if (e instanceof StopCheckingException) {
+                // everything is OK
+            }
+            else {
+                throw e;
+            }
+        }
+
+
         if (changed)
             $scope.$apply();
 
@@ -95,6 +124,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
         for(var i = 1; i <= 8; i++) {
             $scope.posts.push({id: i + length, visible: true});
         }
+        $scope.last_visible_idx = $scope.posts.length - 1;
     };
 
     $scope.init();
