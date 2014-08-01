@@ -9,9 +9,9 @@ mod.directive('infiniteScroll', [
 
       restrict: 'A',
       scope: {
-        objects: '=',
-        loadMore: '&',
-        key: '@'
+        infiniteScrollObjects: '=',
+        infiniteScroll: '&',
+        infiniteScrollVisibilityKey: '@'
       },
 
       link: function(scope, elem, attrs) {
@@ -42,9 +42,9 @@ mod.directive('infiniteScroll', [
           shouldScroll = remaining <= $window.height() * scrollDistance;
           if (shouldScroll && scrollEnabled) {
             if ($rootScope.$$phase) {
-              scope.loadMore();
+              scope.infiniteScroll();
             } /**/ else {
-              scope.loadMore();
+              scope.infiniteScroll();
               scope.$apply();
             }/**/
           } else if (shouldScroll) {
