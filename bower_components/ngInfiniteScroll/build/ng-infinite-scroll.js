@@ -6,6 +6,14 @@ mod = angular.module('infinite-scroll', []);
 mod.directive('infiniteScroll', [
   '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
     return {
+
+      restrict: 'A',
+      scope: {
+        objects: '=',
+        loadMore: '&',
+        key: '@'
+      },
+
       link: function(scope, elem, attrs) {
         var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
         $window = angular.element($window);
@@ -34,9 +42,10 @@ mod.directive('infiniteScroll', [
           shouldScroll = remaining <= $window.height() * scrollDistance;
           if (shouldScroll && scrollEnabled) {
             if ($rootScope.$$phase) {
-              return scope.$eval(attrs.infiniteScroll);
+              scope.loadMore();
             } /**/ else {
-              return scope.$apply(attrs.infiniteScroll);
+              scope.loadMore();
+              scope.$apply();
             }/**/
           } else if (shouldScroll) {
             return checkWhenEnabled = true;
