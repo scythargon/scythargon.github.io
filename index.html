@@ -17,18 +17,17 @@
 </head>
 
 <body>
-  <div ng-app='myApp' ng-controller='DemoController'>
+    <div ng-app='myApp' ng-controller='DemoController'>
 
-    <div infinite-scroll='loadMore()' infinite-scroll-distance='1' infinite-scroll-objects="images" infinite-scroll-visibility-key='_visible'>
+        <div infinite-scroll='loadMore()' infinite-scroll-distance='1' infinite-scroll-objects="images" infinite-scroll-visibility-key='_visible'>
 
         <div class="post" ng-repeat='image in images'>
             <img ng-src='http://placehold.it/500x350&text={{image}}' />
         </div>
 
+        </div>
 
     </div>
-
-  </div>
 
 
 </body>
