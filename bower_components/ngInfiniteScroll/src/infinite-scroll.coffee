@@ -1,6 +1,12 @@
 mod = angular.module('infinite-scroll', [])
 
 mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScope, $window, $timeout) ->
+  restrict: 'A'
+  scope:
+      infiniteScrollObjects: '='
+      infiniteScroll: '&'
+      infiniteScrollVisibilityKey: '@'
+
   link: (scope, elem, attrs) ->
     $window = angular.element($window)
 
@@ -42,9 +48,10 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
 
       if shouldScroll && scrollEnabled
         if $rootScope.$$phase
-          scope.$eval attrs.infiniteScroll
+          scope.infiniteScroll()
         else
-          scope.$apply attrs.infiniteScroll
+          scope.infiniteScroll()
+          scope.$apply()
       else if shouldScroll
         checkWhenEnabled = true
 
