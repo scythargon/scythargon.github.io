@@ -66,6 +66,6 @@ module.exports = (grunt) ->
           interrupt: false
 
   grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.registerTask 'javascripts', ['coffeelint', 'clean', 'coffee', 'concat', 'uglify']
+  grunt.registerTask 'javascripts', ['coffeelint', 'clean', 'coffee', 'concat'] # 'uglify' at the end
   grunt.registerTask 'default', ['javascripts', 'watch']
   grunt.registerTask 'test', ['testacular']

@@ -35,37 +35,40 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
           checkWhenEnabled = false
           handler()
 
-    hide_topmost_items = ->
+    init = ->
       for item in scope.infiniteScrollObjects
+        item[scope.infiniteScrollVisibilityKey] = true
+
+    hide_topmost_items = ->
+      for item in (scope.infiniteScrollObjects.filter (item, i) -> item[scope.infiniteScrollVisibilityKey] == true)
         elem = $ '#post_' + item.id
         if elem.position().top + elem.height() + 500 < window.pageYOffset
-          elem.hidden = true
+          item[scope.infiniteScrollVisibilityKey] = false
           window.scrollTo 0, window.pageYOffset - elem.height()
-          elem.hide()
           console.log '#post_' + item.id + ' is hidden now'
       return
 
-    # infinite-scroll specifies a function to call when the window
-    # is scrolled within a certain range from the bottom of the
-    # document. It is recommended to use infinite-scroll-disabled
-    # with a boolean that is set to true when the function is
-    # called in order to throttle the function call.
+
     handler = ->
       hide_topmost_items()
+      if not $rootScope.$$phase
+        scope.$apply()
       windowBottom = $window.height() + $window.scrollTop()
       elementBottom = elem.offset().top + elem.height()
       remaining = elementBottom - windowBottom
       shouldScroll = remaining <= $window.height() * scrollDistance
 
       if shouldScroll && scrollEnabled
-        if $rootScope.$$phase
-          scope.infiniteScroll()
-        else
-          scope.infiniteScroll()
+        before = scope.infiniteScrollObjects.length
+        scope.infiniteScroll()
+        for item in (scope.infiniteScrollObjects.filter (item,i) -> i >= before)
+          item[scope.infiniteScrollVisibilityKey] = true
+        if not $rootScope.$$phase
           scope.$apply()
       else if shouldScroll
         checkWhenEnabled = true
 
+    init()
     $window.on 'scroll', handler
     scope.$on '$destroy', ->
       $window.off 'scroll', handler

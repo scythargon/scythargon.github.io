@@ -21,7 +21,7 @@
 
         <div infinite-scroll='loadMore()' infinite-scroll-distance='1' infinite-scroll-objects="posts" infinite-scroll-visibility-key='_visible'>
 
-        <div class="post" ng-repeat='post in posts' id="post_{{post.id}}">
+        <div class="post" ng-repeat="post in posts | filter: {_visible: true}" id="post_{{post.id}}">
             <img ng-src='http://placehold.it/500x350&text={{post.id}}' />
         </div>
 
