@@ -1,0 +1,25 @@
+{
+  "name": "ng-infinite-scroll-with-deletion",
+  "version": "1.0.0",
+  "description": "Infinite scrolling for AngularJS with bidirectional items deletion",
+  "repository": {
+    "type": "git",
+    "url": "git://https://github.com/scythargon/angularjs-infinitescroll-with-deletion/.git"
+  },
+  "author": "Dmitriy Vasilev <scythargon@gmail.com>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "chai": "~1.4.0",
+    "grunt-testacular": "~0.3.0",
+    "grunt-coffeelint": "0.0.5",
+    "grunt-coffee": "0.0.6",
+    "testacular": "~0.4.0",
+    "grunt-contrib-coffee": "~0.4.0",
+    "grunt-contrib-concat": "~0.1.2",
+    "grunt-contrib-uglify": "~0.1.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "coffee-script": "~1.4.0",
+    "grunt-contrib-clean": "~0.4.0"
+  }
+}
