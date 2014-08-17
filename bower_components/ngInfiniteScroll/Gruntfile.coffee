@@ -58,6 +58,14 @@ module.exports = (grunt) ->
           reporters: ['dots']
           runnerPort: 9101
           keepalive: true
+    watch:
+      javascripts:
+        files: 'src/**/*.coffee'
+        tasks: [ 'javascripts' ]
+        options:
+          interrupt: false
 
-  grunt.registerTask 'default', ['coffeelint', 'clean', 'coffee', 'concat', 'uglify']
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.registerTask 'javascripts', ['coffeelint', 'clean', 'coffee', 'concat', 'uglify']
+  grunt.registerTask 'default', ['javascripts', 'watch']
   grunt.registerTask 'test', ['testacular']

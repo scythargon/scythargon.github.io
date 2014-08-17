@@ -35,12 +35,23 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
           checkWhenEnabled = false
           handler()
 
+    hide_topmost_items = ->
+      for item in scope.infiniteScrollObjects
+        elem = $ '#post_' + item.id
+        if elem.position().top + elem.height() + 500 < window.pageYOffset
+          elem.hidden = true
+          window.scrollTo 0, window.pageYOffset - elem.height()
+          elem.hide()
+          console.log '#post_' + item.id + ' is hidden now'
+      return
+
     # infinite-scroll specifies a function to call when the window
     # is scrolled within a certain range from the bottom of the
     # document. It is recommended to use infinite-scroll-disabled
     # with a boolean that is set to true when the function is
     # called in order to throttle the function call.
     handler = ->
+      hide_topmost_items()
       windowBottom = $window.height() + $window.scrollTop()
       elementBottom = elem.offset().top + elem.height()
       remaining = elementBottom - windowBottom
