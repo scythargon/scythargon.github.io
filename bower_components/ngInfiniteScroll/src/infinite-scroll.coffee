@@ -39,18 +39,33 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
       for item in scope.infiniteScrollObjects
         item[scope.infiniteScrollVisibilityKey] = true
 
+    TOP_SCROLL_RESERVE = 2000
+
     hide_topmost_items = ->
       for item in (scope.infiniteScrollObjects.filter (item, i) -> item[scope.infiniteScrollVisibilityKey] == true)
         elem = $ '#post_' + item.id
-        if elem.position().top + elem.height() + 500 < window.pageYOffset
+        if elem.position().top + elem.height() + TOP_SCROLL_RESERVE < window.pageYOffset
           item[scope.infiniteScrollVisibilityKey] = false
           window.scrollTo 0, window.pageYOffset - elem.height()
           console.log '#post_' + item.id + ' is hidden now'
       return
 
+    show_topmost_items = ->
+      for item in (scope.infiniteScrollObjects.filter (item, i) -> item[scope.infiniteScrollVisibilityKey] == false).reverse()
+        if window.pageYOffset < TOP_SCROLL_RESERVE and item
+          item[scope.infiniteScrollVisibilityKey] = true
+          if not $rootScope.$$phase
+            scope.$apply()
+          elem = $ '#post_' + item.id
+          window.scrollTo 0, window.pageYOffset + elem.height()
+          console.log '#post_' + item.id + ' is visible now'
+        else
+          return
+
 
     handler = ->
       hide_topmost_items()
+      show_topmost_items()
       if not $rootScope.$$phase
         scope.$apply()
       windowBottom = $window.height() + $window.scrollTop()

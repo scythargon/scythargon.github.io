@@ -13,7 +13,7 @@ mod.directive('infiniteScroll', [
         infiniteScrollVisibilityKey: '@'
       },
       link: function(scope, elem, attrs) {
-        var checkWhenEnabled, handler, hide_topmost_items, init, scrollDistance, scrollEnabled;
+        var TOP_SCROLL_RESERVE, checkWhenEnabled, handler, hide_topmost_items, init, scrollDistance, scrollEnabled, show_topmost_items;
         $window = angular.element($window);
         scrollDistance = 0;
         if (attrs.infiniteScrollDistance != null) {
@@ -42,6 +42,7 @@ mod.directive('infiniteScroll', [
           }
           return _results;
         };
+        TOP_SCROLL_RESERVE = 2000;
         hide_topmost_items = function() {
           var item, _i, _len, _ref;
           _ref = scope.infiniteScrollObjects.filter(function(item, i) {
@@ -50,16 +51,37 @@ mod.directive('infiniteScroll', [
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             item = _ref[_i];
             elem = $('#post_' + item.id);
-            if (elem.position().top + elem.height() + 500 < window.pageYOffset) {
+            if (elem.position().top + elem.height() + TOP_SCROLL_RESERVE < window.pageYOffset) {
               item[scope.infiniteScrollVisibilityKey] = false;
               window.scrollTo(0, window.pageYOffset - elem.height());
               console.log('#post_' + item.id + ' is hidden now');
             }
           }
         };
+        show_topmost_items = function() {
+          var item, _i, _len, _ref;
+          _ref = (scope.infiniteScrollObjects.filter(function(item, i) {
+            return item[scope.infiniteScrollVisibilityKey] === false;
+          })).reverse();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            item = _ref[_i];
+            if (window.pageYOffset < TOP_SCROLL_RESERVE && item) {
+              item[scope.infiniteScrollVisibilityKey] = true;
+              if (!$rootScope.$$phase) {
+                scope.$apply();
+              }
+              elem = $('#post_' + item.id);
+              window.scrollTo(0, window.pageYOffset + elem.height());
+              console.log('#post_' + item.id + ' is visible now');
+            } else {
+              return;
+            }
+          }
+        };
         handler = function() {
           var before, elementBottom, item, remaining, shouldScroll, windowBottom, _i, _len, _ref;
           hide_topmost_items();
+          show_topmost_items();
           if (!$rootScope.$$phase) {
             scope.$apply();
           }
