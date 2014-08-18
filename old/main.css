@@ -1,0 +1,9 @@
+*{
+    outline: none !important;
+}
+
+div.post{
+    margin: 50px auto;
+    height: 350px;
+    width: 500px;
+}

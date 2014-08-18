@@ -1,0 +1,19 @@
+{
+  "name": "6.0_angular",
+  "version": "0.0.0",
+  "authors": [
+    "Dmitriy Vasilev"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16",
+    "bootstrap": "~3.1.1"
+  }
+}
