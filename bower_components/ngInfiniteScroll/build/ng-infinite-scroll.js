@@ -13,9 +13,10 @@ mod.directive('infiniteScroll', [
         infiniteScrollVisibilityKey: '@'
       },
       link: function(scope, elem, attrs) {
-        var BOTTOM_SCROLL_RESERVE, TOP_SCROLL_RESERVE, checkWhenEnabled, check_bottom_items, check_topmost_items, handler, init, scrollDistance, scrollEnabled, self_check, shouldScroll, show_bottom_items, show_topmost_items;
+        var BOTTOM_SCROLL_RESERVE, TOP_SCROLL_RESERVE, checkWhenEnabled, check_bottom_items, check_topmost_items, debug, handler, init, scrollDistance, scrollEnabled, self_check, shouldScroll, show_bottom_items, show_topmost_items;
         $window = angular.element($window);
         scope.parent_elem = elem;
+        debug = false;
         scrollDistance = 0;
         if (attrs.infiniteScrollDistance != null) {
           scope.$watch(attrs.infiniteScrollDistance, function(value) {
@@ -58,7 +59,9 @@ mod.directive('infiniteScroll', [
                 hidden=true;
                 scope.first_visible_idx += 1;
                 window.scrollTo(0, window.pageYOffset - elem.outerHeight(true));
-                console.log('%c hide_topmost_items: #post_' + item.id + ' is hidden now', 'color: green;');
+                if (debug) {
+                  console.log('%c hide_topmost_items: #post_' + item.id + ' is hidden now', 'color: green;');
+                }
               } else {
                 break;
               }
@@ -84,7 +87,9 @@ mod.directive('infiniteScroll', [
               }
               elem = $('#post_' + item.id);
               window.scrollTo(0, window.pageYOffset + elem.outerHeight(true));
-              console.log('%c show_topmost_items: #post_' + item.id + ' is visible now', 'color:lime');
+              if (debug) {
+                console.log('%c show_topmost_items: #post_' + item.id + ' is visible now', 'color:lime');
+              }
             } else {
               return;
             }
@@ -101,7 +106,9 @@ mod.directive('infiniteScroll', [
               item[scope.infiniteScrollVisibilityKey] = false;
               hidden =  true;
               scope.last_visible_idx -= 1;
-              console.log('%c check_bottom_items: #post_' + item.id + ' is hidden now', 'color: blue;');
+              if (debug) {
+                console.log('%c check_bottom_items: #post_' + item.id + ' is hidden now', 'color: blue;');
+              }
             } else {
               break;
             }
@@ -132,7 +139,9 @@ mod.directive('infiniteScroll', [
             if (!$rootScope.$$phase) {
               scope.$apply();
             }
-            console.log('%c show_bottom_items: #post_' + item.id + ' is visible now', 'color: #00ffff');
+            if (debug) {
+              console.log('%c show_bottom_items: #post_' + item.id + ' is visible now', 'color: #00ffff');
+            }
             if (!shouldScroll()) {
               return;
             }
@@ -159,18 +168,22 @@ mod.directive('infiniteScroll', [
             }
             prev = cur;
           }
-          return console.log('%c ________OK', 'color: green; font-weight: bold;');
+          if (debug) {
+            return console.log('%c ________OK', 'color: green; font-weight: bold;');
+          }
         };
         scope.previos_yposition = 0;
         handler = function() {
           var before, distance, item, _i, _len, _ref;
-          distance = Math.abs(window.pageYOffset - scope.previos_yposition);
-          if (window.pageYOffset > scope.previos_yposition) {
-            console.log('%c DOWN ' + distance, 'color: red; font-weight: bold;');
-          } else {
-            console.log('%c UP ' + distance, 'color: red; font-weight: bold;');
+          if (debug) {
+            distance = Math.abs(window.pageYOffset - scope.previos_yposition);
+            if (window.pageYOffset > scope.previos_yposition) {
+              console.log('%c DOWN ' + distance, 'color: red; font-weight: bold;');
+            } else {
+              console.log('%c UP ' + distance, 'color: red; font-weight: bold;');
+            }
+            scope.previos_yposition = window.pageYOffset;
           }
-          scope.previos_yposition = window.pageYOffset;
           check_topmost_items();
           check_bottom_items();
           if (!$rootScope.$$phase) {
@@ -187,7 +200,9 @@ mod.directive('infiniteScroll', [
               item[scope.infiniteScrollVisibilityKey] = true;
             }
             scope.last_visible_idx = scope.infiniteScrollObjects.length - 1;
-            console.log('%c new objects loaded, latest: ' + scope.infiniteScrollObjects.length, 'color: blue; font-weight: bold;');
+            if (debug) {
+              console.log('%c new objects loaded, latest: ' + scope.infiniteScrollObjects.length, 'color: blue; font-weight: bold;');
+            }
             if (!$rootScope.$$phase) {
               scope.$apply();
             }

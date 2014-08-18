@@ -10,6 +10,7 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
   link: (scope, elem, attrs) ->
     $window = angular.element($window)
     scope.parent_elem = elem
+    debug = false
 
     # infinite-scroll-distance specifies how close to the bottom of the page
     # the window is allowed to be before we trigger a new scroll. The value
@@ -55,7 +56,8 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
             `hidden=true`
             scope.first_visible_idx += 1
             window.scrollTo 0, window.pageYOffset - elem.outerHeight(true)
-            console.log('%c hide_topmost_items: #post_' + item.id + ' is hidden now', 'color: green;')
+            if debug
+              console.log('%c hide_topmost_items: #post_' + item.id + ' is hidden now', 'color: green;')
           else
             break
       if not hidden
@@ -72,7 +74,8 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
             scope.$apply()
           elem = $ '#post_' + item.id
           window.scrollTo 0, window.pageYOffset + elem.outerHeight(true)
-          console.log('%c show_topmost_items: #post_' + item.id + ' is visible now', 'color:lime')
+          if debug
+            console.log('%c show_topmost_items: #post_' + item.id + ' is visible now', 'color:lime')
         else
           return
 
@@ -84,7 +87,8 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
           item[scope.infiniteScrollVisibilityKey] = false
           `hidden =  true`
           scope.last_visible_idx -= 1
-          console.log('%c check_bottom_items: #post_' + item.id + ' is hidden now', 'color: blue;')
+          if debug
+            console.log('%c check_bottom_items: #post_' + item.id + ' is hidden now', 'color: blue;')
         else
           break
       if not hidden
@@ -105,7 +109,8 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
         scope.last_visible_idx += 1
         if not $rootScope.$$phase
           scope.$apply()
-        console.log('%c show_bottom_items: #post_' + item.id + ' is visible now', 'color: #00ffff')
+        if debug
+          console.log('%c show_bottom_items: #post_' + item.id + ' is visible now', 'color: #00ffff')
         if not shouldScroll()
           return
 
@@ -124,18 +129,20 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
           alert 'max attention'
           throw new Error
         prev = cur
-      console.log('%c ________OK', 'color: green; font-weight: bold;')
+      if debug
+        console.log('%c ________OK', 'color: green; font-weight: bold;')
 
 
     scope.previos_yposition = 0
 
     handler = ->
-      distance = Math.abs(window.pageYOffset - scope.previos_yposition)
-      if window.pageYOffset > scope.previos_yposition
-        console.log('%c DOWN ' + distance, 'color: red; font-weight: bold;')
-      else
-        console.log('%c UP ' + distance, 'color: red; font-weight: bold;')
-      scope.previos_yposition = window.pageYOffset
+      if debug
+        distance = Math.abs(window.pageYOffset - scope.previos_yposition)
+        if window.pageYOffset > scope.previos_yposition
+          console.log('%c DOWN ' + distance, 'color: red; font-weight: bold;')
+        else
+          console.log('%c UP ' + distance, 'color: red; font-weight: bold;')
+        scope.previos_yposition = window.pageYOffset
       check_topmost_items()
       check_bottom_items()
       if not $rootScope.$$phase
@@ -146,7 +153,8 @@ mod.directive 'infiniteScroll', ['$rootScope', '$window', '$timeout', ($rootScop
         for item in (scope.infiniteScrollObjects.filter (item,i) -> i >= before)
           item[scope.infiniteScrollVisibilityKey] = true
         scope.last_visible_idx = scope.infiniteScrollObjects.length - 1
-        console.log('%c new objects loaded, latest: '+scope.infiniteScrollObjects.length, 'color: blue; font-weight: bold;')
+        if debug
+          console.log('%c new objects loaded, latest: '+scope.infiniteScrollObjects.length, 'color: blue; font-weight: bold;')
         if not $rootScope.$$phase
           scope.$apply()
       else if shouldScroll()
