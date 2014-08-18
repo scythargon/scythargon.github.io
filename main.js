@@ -27,7 +27,7 @@ myApp.controller('DemoController', function($scope, $timeout, $rootElement) {
   $scope.loadMore = function() {
     var i, length, _i;
     length = $scope.posts.length;
-    for (i = _i = 1; _i <= 8; i = ++_i) {
+    for (i = _i = 1; _i <= 20; i = ++_i) {
       $scope.posts.push({
         id: i + length
       });

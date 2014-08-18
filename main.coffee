@@ -15,7 +15,7 @@ myApp.controller 'DemoController', ($scope, $timeout, $rootElement) ->
   ]
   $scope.loadMore = ->
     length = $scope.posts.length
-    for i in [1..8]
+    for i in [1..20]
       $scope.posts.push {id: i + length}
     return
   return
