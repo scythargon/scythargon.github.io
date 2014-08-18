@@ -20,6 +20,8 @@ module.exports = (grunt) ->
           level: 'error'
         no_stand_alone_at:
           level: 'error'
+        no_backticks:
+          level: 'ignore'
     clean:
       options:
         force: true
