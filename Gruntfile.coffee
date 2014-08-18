@@ -11,7 +11,7 @@ module.exports = (grunt) ->
     meta:
       banner: '/* <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n'
     coffeelint:
-      src: 'src/**/*.coffee'
+      src: 'main.coffee'
       options:
         max_line_length:
           level: 'ignore'
@@ -20,20 +20,18 @@ module.exports = (grunt) ->
           level: 'error'
         no_stand_alone_at:
           level: 'error'
-        no_backticks:
-          level: 'ignore'
     clean:
       options:
         force: true
-      build: ["compile/**", "build/**"]
+      build: ["main.js"]
     coffee:
       compile:
         files: [
           {
             expand: true
-            cwd: 'src/'
-            src: '**/*.coffee'
-            dest: 'compile/'
+            cwd: './'
+            src: 'main.coffee'
+            dest: './'
             ext: '.js'
           }
         ],
@@ -43,31 +41,21 @@ module.exports = (grunt) ->
       options:
         banner: '<%= meta.banner %>'
       dist:
-        src: 'compile/**/*.js'
-        dest: 'build/ng-infinite-scroll.js'
+        src: 'main.js'
+        dest: 'main.js'
     uglify:
       options:
         banner: '<%= meta.banner %>'
       dist:
-        src: ['build/ng-infinite-scroll.js']
-        dest: 'build/ng-infinite-scroll.min.js'
-    testacular:
-      unit:
-        options:
-          configFile: 'test/testacular.conf.js'
-          autoWatch: true
-          browsers: ['Chrome', 'PhantomJS']
-          reporters: ['dots']
-          runnerPort: 9101
-          keepalive: true
+        src: ['main.js']
+        dest: 'main.min.js'
     watch:
       javascripts:
-        files: 'src/**/*.coffee'
+        files: 'main.coffee',
         tasks: [ 'javascripts' ]
         options:
           interrupt: false
 
-  grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.registerTask 'javascripts', ['coffeelint', 'clean', 'coffee', 'concat'] # 'uglify' at the end
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.registerTask 'javascripts', ['coffeelint', 'clean', 'coffee']
   grunt.registerTask 'default', ['javascripts', 'watch']
-  grunt.registerTask 'test', ['testacular']
